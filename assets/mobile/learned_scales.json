@@ -1,8 +1,11 @@
 {
   "./assets/images/screen/dispatch.png": 1.05,
+  "./assets/images/screen/guide/enter_guide3.png": 1.1,
   "./assets/images/screen/guide/guide2.png": 1.05,
+  "./assets/images/screen/guide/guide3.png": 1.1,
   "./assets/images/screen/mail.png": 1.25,
   "./assets/images/screen/main.png": 1.25,
+  "./assets/images/screen/map.png": 1.25,
   "./assets/images/screen/pass/pass1.png": 1.25,
   "./assets/images/screen/pass/pass2.png": 1.25,
   "./assets/images/share/menu/achievement.png": 1.25,
@@ -19,5 +22,7 @@
   "./assets/images/share/reward/pass/enter_pass2.png": 1.4,
   "./assets/images/share/reward/pass/lock.png": 1.25,
   "./assets/images/zh_CN/base/click_close.png": 1.25,
+  "./assets/images/zh_CN/fight/fight_again.png": 1.25,
+  "./assets/images/zh_CN/fight/fight_exit.png": 1.25,
   "./assets/images/zh_CN/reward/quest/receive.png": 1.15
 }
