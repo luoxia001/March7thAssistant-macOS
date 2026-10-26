@@ -167,6 +167,14 @@ def template_threshold(target: str, threshold, has_mask: bool, scale: float = 1.
     return threshold
 
 
+def template_alternatives(target: str) -> list:
+    """模板的备选模板（同一个界面在移动端有多种样子） 任一匹配即可"""
+    if not is_mobile():
+        return []
+    _, _, conf = template_info(target)
+    return list(conf.get("alternatives", []))
+
+
 def mask_threshold(target: str) -> float:
     """带透明通道的模板在移动端的匹配阈值（TM_CCOEFF_NORMED）"""
     _, _, conf = template_info(target)

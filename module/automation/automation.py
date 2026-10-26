@@ -236,7 +236,7 @@ class Automation(metaclass=SingletonMeta):
         return top_left, bottom_right
 
     @pause_guard
-    def find_image_element(self, target, threshold, scale_range, relative=False, cacheable=True):
+    def find_image_element(self, target, threshold, scale_range, relative=False, cacheable=True, _alternative=False):
         """
         查找图像元素。
         :param target: 目标图像路径。
@@ -248,6 +248,13 @@ class Automation(metaclass=SingletonMeta):
         badge = mobile.badge_config(target)
         if badge is not None:
             return self.find_mobile_badge_element(target, badge, relative)
+        alternatives = [] if _alternative else mobile.template_alternatives(target)
+        if alternatives:
+            for candidate in [None, *alternatives]:
+                result = self.find_image_element(target if candidate is None else candidate, threshold, scale_range, relative, cacheable, _alternative=candidate is None)
+                if result[0] is not None:
+                    return result
+            return None, None, None
         try:
             screenshot = cv2.cvtColor(np.array(self.screenshot), cv2.COLOR_BGR2RGB)  # 将截图转换为RGB
             # 移动端模板缩放比例不确定时 逐个比例尝试 取最好的结果

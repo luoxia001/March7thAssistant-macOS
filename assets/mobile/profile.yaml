@@ -66,6 +66,11 @@ key_rules:
     keys:
       f: [130, 900]        # 购买经验
       d: [1782, 610]       # 商店刷新（商店展开时）
+  - template: "./assets/mobile/images/screen/currency_wars/exit_shop_open.png"   # 货币战争对局内 商店展开
+    region: [0, 0, 220, 140]
+    keys:
+      f: [130, 900]
+      d: [1782, 610]
 
 # Esc 时依次查找的按钮 第一个找到的会被点击
 back_buttons:
@@ -97,7 +102,9 @@ templates:
   # 角色信息面板的前台/后台图标 1.25 倍时对应 0.96 另一个 0.83
   "./assets/images/screen/currency_wars/pos_forward.png": {scale: 1.25}
   "./assets/images/screen/currency_wars/pos_backward.png": {scale: 1.25}
-  "./assets/images/screen/currency_wars/exit.png": {scale: 1.25}
+  # 货币战争对局主界面 商店展开时退出按钮被「备战阶段」面板挡住 用面板文字作为备选
+  "./assets/images/screen/currency_wars/exit.png": {scale: 1.25, alternatives: ["./assets/mobile/images/screen/currency_wars/exit_shop_open.png"]}
+  "./assets/mobile/images/screen/currency_wars/exit_shop_open.png": {scale: 1.0, threshold: 0.85}
   # 手机菜单的奖励红点（移动端红点在图标所在格子的右上角 和 PC 模板里的相对位置不同）
   "./assets/images/share/menu/quest_reward.png": {icon: "./assets/images/share/menu/guide.png", badge: [65, -55, 75, 70]}
   "./assets/images/share/menu/dispatch_reward.png": {icon: "./assets/images/share/menu/dispatch.png", badge: [65, -55, 75, 70]}
@@ -181,7 +188,7 @@ crops:
   "1831,188,35,42": [1812, 80, 50, 45]       # 费用
   "6,5,12,14": [950, 520, 20, 20]            # 点击空白处取消选中（PC 原点 移动端左上角是退出按钮）
   "414,56,117,44": [470, 50, 100, 45]        # 货币战争 当前阶段 1-1
-  "3,37,104,57": [0, 0, 150, 110]            # 货币战争 左上角退出按钮
+  "3,37,104,57": [0, 0, 220, 140]            # 货币战争 左上角退出按钮
   "1559,880,127,82": [1800, 875, 70, 65]      # 货币战争 当前金币（商店按钮上）
   "235,876,125,60": [60, 850, 150, 85]        # 货币战争 等级 Lv.N
   "235,930,124,38": [90, 922, 90, 45]         # 货币战争 经验 N/M
