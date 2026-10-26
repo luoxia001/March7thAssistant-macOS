@@ -11,6 +11,7 @@
   "./assets/images/screen/currency_wars/homepage.png": 1.25,
   "./assets/images/screen/currency_wars/mode_select.png": 1.25,
   "./assets/images/screen/currency_wars/mode_select_overclock.png": 1.25,
+  "./assets/images/screen/currency_wars/new.png": 1.25,
   "./assets/images/screen/dispatch.png": 1.05,
   "./assets/images/screen/forgottenhall/memory_of_chaos.png": 1.25,
   "./assets/images/screen/guide/enter_guide3.png": 1.1,
@@ -41,6 +42,7 @@
   "./assets/images/share/reward/pass/enter_pass2.png": 1.4,
   "./assets/images/share/reward/pass/lock.png": 1.25,
   "./assets/images/zh_CN/base/click_close.png": 1.25,
+  "./assets/images/zh_CN/base/confirm.png": 1.25,
   "./assets/images/zh_CN/fight/fight_again.png": 1.25,
   "./assets/images/zh_CN/fight/fight_exit.png": 1.25,
   "./assets/images/zh_CN/reward/quest/receive.png": 1.15
