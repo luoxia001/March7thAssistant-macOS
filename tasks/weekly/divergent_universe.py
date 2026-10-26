@@ -1530,7 +1530,8 @@ class DivergentUniverse:
             time.sleep(2)
             return False
 
-        slot_ys = (240, 372, 503, 634)
+        from module import mobile
+        slot_ys = tuple(mobile.layout("divergent_save_slot_ys", (240, 372, 503, 634)))
         empty_icon = "./assets/images/screen/divergent_universe/empty_save_slot.png"
 
         for index, y in enumerate(slot_ys):

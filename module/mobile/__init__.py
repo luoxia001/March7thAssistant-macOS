@@ -258,3 +258,10 @@ def map_crop(crop):
 def touch_point(name: str, default=None):
     """触控布局里按钮的标准坐标"""
     return profile()["touch"].get(name, default)
+
+
+def layout(name: str, default):
+    """移动端布局里写死在业务代码中的数值（如列表行的纵坐标） PC 或未配置时返回 default"""
+    if not is_mobile():
+        return default
+    return profile().get("layout", {}).get(name, default)
