@@ -314,6 +314,8 @@ forgottenhall_team2: # 队伍2配置。
     - -1
   - - Qingque
     - 1
+forgottenhall_team1_preset: 0 # 队伍1使用的预设编队编号（游戏内「预设编队」里的队伍N），0 表示按 forgottenhall_team1 的角色逐个选择。
+forgottenhall_team2_preset: 0 # 队伍2使用的预设编队编号，0 表示按 forgottenhall_team2 的角色逐个选择。
 forgottenhall_timestamp: 0 # 上次运行混沌回忆的时间戳，用于记录和控制运行频率。
 
 # 虚构叙事配置

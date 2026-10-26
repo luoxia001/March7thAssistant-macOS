@@ -103,6 +103,52 @@ class BaseChallenge(ABC):
             return True
         return False
 
+    def select_preset_team(self, preset, team_image_path):
+        '''从「预设编队」里选择队伍填入指定的队伍位置'''
+        # 先选中要填入的队伍位置 再点预设 预设会填入当前选中的位置
+        if not auto.click_element(team_image_path, "image", 0.8, max_retries=10, crop=(592.0 / 1920, 556.0 / 1080, 256.0 / 1920, 424.0 / 1080)):
+            return False
+        time.sleep(1)
+        if not auto.click_element("预设编队", "text", max_retries=4, retry_delay=0.5, crop=(6 / 1920, 8 / 1080, 778 / 1920, 168 / 1080)):
+            return False
+        time.sleep(1)
+        team_name = f"队伍{int(preset)}"
+        team_name_crop = (6 / 1920, 116 / 1080, 700 / 1920, 900 / 1080)
+        for _ in range(4):
+            pos = self._find_preset_title(team_name, team_name_crop)
+            if pos:
+                auto.click_element_with_pos(pos)
+                log.info(f"已选择预设编队{team_name}")
+                time.sleep(1)
+                return True
+            log.info(f"未找到预设编队{team_name}，尝试滚动")
+            auto.click_element(team_name_crop, "crop", action="move")
+            auto.mouse_scroll(28, -1, False)
+            time.sleep(1)
+        log.error(f"未找到预设编队{team_name}")
+        return False
+
+    @staticmethod
+    def _find_preset_title(team_name, crop):
+        '''
+        查找预设编队的标题位置
+
+        角色头像下方也会显示「队伍N」表示该角色所在的队伍 文字和标题相同
+        头像标签的正下方紧跟着「等级」 标题下方没有 以此区分
+        '''
+        auto.take_screenshot(crop=crop)
+        auto.perform_ocr()
+        boxes = [(box, text.strip().lstrip("★☆*").strip()) for box, (text, _) in auto.ocr_result]
+        levels = [box for box, text in boxes if text.startswith("等级")]
+        for box, text in boxes:
+            if text != team_name:
+                continue
+            height = box[2][1] - box[0][1]
+            is_label = any(abs(level[0][0] - box[0][0]) < height * 2 and 0 < level[0][1] - box[2][1] < height * 2 for level in levels)
+            if not is_label:
+                return auto.calculate_text_position(box, False)
+        return None
+
     def click_message_box(self):
         '''等待游戏加载并点击弹窗'''
         if auto.find_element("空白", "text", max_retries=120, crop=(12.0 / 1920, 731.0 / 1080, 1904.0 / 1920, 280.0 / 1080), include=True):

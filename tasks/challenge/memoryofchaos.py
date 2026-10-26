@@ -10,11 +10,14 @@ from module.logger import log
 
 
 class MemoryOfChaos(BaseChallenge):
-    def __init__(self, team1, team2, level_range=(7, 12), hotkey_technique="e", auto_battle_detect_enable=True) -> None:
+    def __init__(self, team1, team2, level_range=(7, 12), hotkey_technique="e", auto_battle_detect_enable=True, team1_preset=0, team2_preset=0) -> None:
         super().__init__("混沌回忆", 36, hotkey_technique, auto_battle_detect_enable)
         self.team1 = team1
         self.team2 = team2
         self.level_range = level_range
+        # 预设编队编号 大于 0 时从「预设编队」选队 否则按 team1/team2 的角色逐个选择
+        self.team1_preset = int(team1_preset or 0)
+        self.team2_preset = int(team2_preset or 0)
 
     def run(self):
         '''执行挑战'''
@@ -160,10 +163,13 @@ class MemoryOfChaos(BaseChallenge):
             if status:
                 auto.click_element("./assets/images/forgottenhall/reset.png", "image", 0.8, max_retries=10, crop=(617.0 / 1920, 432.0 / 1080, 1294.0 / 1920, 510.0 / 1080))
                 time.sleep(0.5)
-                if not self.select_characters(self.team1, "./assets/images/forgottenhall/team1.png"):
-                    return False
-                if not self.select_characters(self.team2, "./assets/images/forgottenhall/team2.png"):
-                    return False
+                for team, preset, image in ((self.team1, self.team1_preset, "./assets/images/forgottenhall/team1.png"),
+                                            (self.team2, self.team2_preset, "./assets/images/forgottenhall/team2.png")):
+                    if preset > 0:
+                        if not self.select_preset_team(preset, image):
+                            return False
+                    elif not self.select_characters(team, image):
+                        return False
                 return True
             else:
                 auto.click_element("./assets/images/forgottenhall/switch.png", "image", 0.8, max_retries=10, crop=(617.0 / 1920, 432.0 / 1080, 1294.0 / 1920, 510.0 / 1080))
