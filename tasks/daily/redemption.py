@@ -144,6 +144,11 @@ class Redemption:
             if server is None:
                 log.error("无法判断游戏服务器类型，跳过兑换码任务")
                 return False
+        elif cfg.playcover_enable:
+            # iOS 版游戏内没有兑换码入口（手机菜单「…」和设置里都没有） 只能去官网兑换
+            log.info("iOS 版游戏内没有兑换码入口，跳过兑换码任务")
+            log.hr("完成", 2)
+            return False
         else:
             server = 'cn'  # 云游戏默认国服
 
