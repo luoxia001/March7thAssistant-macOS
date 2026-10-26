@@ -136,6 +136,8 @@ templates:
   "./assets/images/screen/currency_wars/exit.png": {scale: 1.25, alternatives: ["./assets/mobile/images/screen/currency_wars/exit_shop_open.png"]}
   "./assets/mobile/images/screen/currency_wars/exit_shop_open.png": {scale: 1.0, threshold: 0.85}
   "./assets/mobile/images/ui/char_list_tab.png": {scale: 1.0}
+  # 每日实训 500 档礼包领完后的打勾圆环和数字「5」 移动端模板在 500 档为 1.0 其他打勾档位最高 0.85（300 的「3」）
+  "./assets/images/share/reward/quest/500.png": {threshold: 0.95}
   # 手机菜单的奖励红点（移动端红点在图标所在格子的右上角 和 PC 模板里的相对位置不同）
   "./assets/images/share/menu/quest_reward.png": {icon: "./assets/images/share/menu/guide.png", badge: [65, -55, 75, 70]}
   "./assets/images/share/menu/dispatch_reward.png": {icon: "./assets/images/share/menu/dispatch.png", badge: [65, -55, 75, 70]}
@@ -154,6 +156,7 @@ crops:
   "262,289,422,624": [175, 250, 470, 690]     # 生存索引 左侧副本类型列表
   "243,377,1428,528": [180, 390, 1580, 520]   # 每日实训 任务卡片（进度 标题 领取/前往）
   "415,270,1252,114": [400, 230, 1360, 140]   # 每日实训 顶部活跃度礼包（移动端礼包偏上 PC 区域会切掉上半）
+  "478,350,981,399": [360, 310, 1200, 170]    # 合成 筛选规则 材料类型选项（移动端选项从 x=366 开始）
   "686,287,980,650": [650, 220, 1110, 720]    # 生存索引 右侧副本列表
   "0,903,144,120": [1680, 20, 100, 80]        # 战斗 自动战斗按钮（移动端在右上角）
   "231,420,450,536": [175, 400, 470, 600]     # 逐光捡金 左侧玩法列表（忘却之庭 虚构叙事）
