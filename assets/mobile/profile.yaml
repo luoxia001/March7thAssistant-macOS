@@ -82,6 +82,8 @@ templates:
   "./assets/images/share/character/": {scale: 1.25, threshold: 0.85}
   # 忘却之庭/虚构叙事 房间内战斗外左上角的灯泡 PC 的掩码模板在战斗画面也有 0.72
   "./assets/images/purefiction/prepare_fight.png": {threshold: 0.8}
+  # 战斗右上角「未开启自动战斗」 不同战斗场景下 0.82~0.90 开启后约 0.34
+  "./assets/images/share/base/not_auto.png": {threshold: 0.75}
   # 手机菜单的奖励红点（移动端红点在图标所在格子的右上角 和 PC 模板里的相对位置不同）
   "./assets/images/share/menu/quest_reward.png": {icon: "./assets/images/share/menu/guide.png", badge: [65, -55, 75, 70]}
   "./assets/images/share/menu/dispatch_reward.png": {icon: "./assets/images/share/menu/dispatch.png", badge: [65, -55, 75, 70]}
