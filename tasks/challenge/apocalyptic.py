@@ -150,11 +150,17 @@ class Apocalyptic(BaseChallenge):
                 log.error("前往挑战失败")
                 return False
 
-            if not auto.click_element(f"下一步", "text", max_retries=20, crop=(0, 0, 1, 1), include=True):
-                # log.error("下一步失败")
-                return False
-            if not auto.click_element(f"前往编队", "text", max_retries=20, crop=(0, 0, 1, 1), include=True):
-                # log.error("前往编队失败")
+            # 首次进入会先显示关卡介绍（下一步 → 前往编队）；之前进过编队页时直接进入编队页
+            on_team_page = lambda: auto.find_element("节点一", "text", max_retries=1, crop=(963.0 / 1920, 209.0 / 1080, 798.0 / 1920, 252.0 / 1080), include=True)
+            for _ in range(20):
+                if on_team_page():
+                    break
+                if auto.click_element(("下一步", "前往编队"), "text", max_retries=1, crop=(0, 0, 1, 1), include=True):
+                    time.sleep(1)
+                else:
+                    time.sleep(1)
+            else:
+                log.error("进入编队页失败")
                 return False
 
             # 准备关卡
