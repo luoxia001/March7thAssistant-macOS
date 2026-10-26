@@ -243,6 +243,7 @@ class Apocalyptic(BaseChallenge):
 
     def select_buff(self):
         '''选择增益效果'''
+        time.sleep(1)  # 等角色列表收起 收起动画期间点「+」无效
         top_left = self.find_node("节点一")
         if auto.click_element("./assets/images/purefiction/plus.png", "image", 0.8, max_retries=10, crop=(top_left[0] / 1920, top_left[1] / 1080, 792.0 / 1920, 254.0 / 1080)):
             if auto.click_element("./assets/images/purefiction/choose.png", "image", 0.8, max_retries=10):
