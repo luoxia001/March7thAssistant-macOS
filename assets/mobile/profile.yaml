@@ -103,9 +103,9 @@ templates:
   "./assets/images/share/base/not_auto.png": {threshold: 0.75, reject_color: {lower: [15, 90, 150], upper: [40, 255, 255], min_pixels: 100}}
   # 货币战争选关 底部「敌人难度」数字 难度1约 0.88 难度2约 0.67
   "./assets/images/screen/universe/homepage.png": {scale: 1.25, threshold: 0.85}   # 差分宇宙首页「开始游戏」 移动端约 0.89
-  # 交互条图标 随意门是「➜」 事件是「💬」 任一出现都算可以按 F
+  # 交互条图标 随意门是「➜」 事件是「💬」 差分宇宙事件位面里任一出现都算可以按 F
+  # 通用的 share/base/F.png 不加💬 大世界里 NPC 对话也是💬 会误触剧情
   "./assets/images/screen/divergent_universe/f.png": {alternatives: ["./assets/mobile/images/screen/divergent_universe/f_event.png"]}
-  "./assets/images/share/base/F.png": {alternatives: ["./assets/mobile/images/screen/divergent_universe/f_event.png"]}
   "./assets/images/screen/currency_wars/level_1.png": {scale: 1.25, threshold: 0.8}
   # 角色信息面板的前台/后台图标 1.25 倍时对应 0.96 另一个 0.83
   "./assets/images/screen/currency_wars/pos_forward.png": {scale: 1.25}
