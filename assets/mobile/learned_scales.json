@@ -55,5 +55,6 @@
   "./assets/images/zh_CN/base/confirm.png": 1.25,
   "./assets/images/zh_CN/fight/fight_again.png": 1.25,
   "./assets/images/zh_CN/fight/fight_exit.png": 1.25,
-  "./assets/images/zh_CN/reward/quest/receive.png": 1.15
+  "./assets/images/zh_CN/reward/quest/receive.png": 1.15,
+  "./assets/mobile/images/screen/divergent_universe/f_event.png": 1.0
 }
