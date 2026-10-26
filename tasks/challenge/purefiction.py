@@ -171,6 +171,8 @@ class PureFiction(BaseChallenge):
     def start_battle(self, status=True):
         '''开始战斗'''
         for i in [1, 2]:
+            if i == 2:
+                self.wait_next_room()
             log.info(f"进入第{i}间")
             self.use_technique_and_attack_monster(getattr(self, f"team{i if status else 3 - i}"))
 

@@ -157,6 +157,31 @@ class BaseChallenge(ABC):
             auto.press_key("esc")
             time.sleep(1)
 
+    def wait_next_room(self, timeout=20):
+        '''
+        等待传送到下一间
+
+        上一间战斗结束后会先回到大世界（出现左上角灯泡） 再自动传送到下一间 传送期间的输入无效
+        先等灯泡消失（开始传送） 再等它重新出现（下一间加载完成）
+        5 秒内灯泡一直没有消失时认为没有传送过程
+        '''
+        prepare_fight = "./assets/images/purefiction/prepare_fight.png"
+        crop = (0 / 1920, 0 / 1080, 300.0 / 1920, 300.0 / 1080)
+        start = time.monotonic()
+        teleporting = False
+        while time.monotonic() - start < timeout:
+            visible = auto.find_element(prepare_fight, "image", 200000, crop=crop)
+            if not visible:
+                teleporting = True
+            elif teleporting:
+                time.sleep(1)
+                return True
+            elif time.monotonic() - start > 5:
+                return True
+            time.sleep(0.3)
+        log.warning("等待传送到下一间超时")
+        return False
+
     def use_technique_and_attack_monster(self, team):
         '''使用秘技并攻击怪物'''
         # 靠近怪物
