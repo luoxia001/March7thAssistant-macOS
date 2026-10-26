@@ -22,7 +22,7 @@ scroll_rules:
 
 # 触控布局
 touch:
-  joystick: [330, 830]        # 左下虚拟摇杆中心
+  joystick: [370, 840]        # 左下虚拟摇杆中心（固定摇杆 圆环中心）
   joystick_radius: 140
   phone: [54, 92]             # 左上手机菜单
   map: [160, 180]             # 小地图

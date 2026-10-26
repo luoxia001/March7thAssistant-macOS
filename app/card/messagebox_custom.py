@@ -871,6 +871,7 @@ class MessageBoxTeam(MessageBox):
 
         self.tech_map = {
             -1: tr("秘技 / 开怪"),
+            -2: tr("秘技 2 次 / 开怪"),
             0: tr("无操作"),
             1: tr("秘技 1 次"),
             2: tr("秘技 2 次"),

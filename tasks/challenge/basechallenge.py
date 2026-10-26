@@ -164,6 +164,7 @@ class BaseChallenge(ABC):
 
         # 使用秘技
         last_index = None
+        opener_count = 1
         for index, (_, count) in enumerate(team, 1):
             if count > 0:
                 auto.press_key(str(index))
@@ -171,8 +172,10 @@ class BaseChallenge(ABC):
                 for _ in range(count):
                     auto.press_key(self.hotkey_technique)
                     time.sleep(1)
-            elif count == -1:
+            elif count < 0:
+                # 负数表示开怪角色 绝对值是开怪时按秘技的次数（如遐蝶需要按两下）
                 last_index = index
+                opener_count = -count
 
         # 切换到开怪角色
         if last_index is not None:
@@ -180,7 +183,10 @@ class BaseChallenge(ABC):
             time.sleep(1)
 
         # 开怪
-        auto.press_key(self.hotkey_technique)
+        for i in range(opener_count):
+            if i > 0:
+                time.sleep(1)
+            auto.press_key(self.hotkey_technique)
         for _ in range(3):
             auto.press_mouse()
             time.sleep(1)
