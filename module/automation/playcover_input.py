@@ -139,26 +139,32 @@ class PlayCoverInput(InputBase):
         if pause:
             time.sleep(0.3)
 
-    def _scroll_rule(self) -> dict:
-        """profile 的 scroll_rules 里第一个匹配当前画面的规则 没有时返回空字典"""
-        rules = profile().get("scroll_rules", [])
+    def _rule_matches(self, rule: dict, screen) -> bool:
+        """画面里 rule 的 region 范围内能找到 rule 的 template（PC 模板路径 按移动端比例缩放）"""
+        from module import mobile
+        template = mobile.read_template(rule["template"])
+        if template is None:
+            return False
+        x, y, w, h = rule.get("region", [0, 0, 1920, 1080])
+        part = screen[y:y + h, x:x + w]
+        if part.shape[0] < template.shape[0] or part.shape[1] < template.shape[1]:
+            return False
+        return cv2.matchTemplate(part, template, cv2.TM_CCOEFF_NORMED).max() >= rule.get("threshold", 0.85)
+
+    def _first_matching_rule(self, rules: list) -> dict:
         if not rules:
             return {}
         screen = self.game.screenshot_bgr()
         if screen is None:
             return {}
-        from module import mobile
         for rule in rules:
-            template = mobile.read_template(rule["template"])
-            if template is None:
-                continue
-            x, y, w, h = rule.get("region", [0, 0, 1920, 1080])
-            part = screen[y:y + h, x:x + w]
-            if part.shape[0] < template.shape[0] or part.shape[1] < template.shape[1]:
-                continue
-            if cv2.matchTemplate(part, template, cv2.TM_CCOEFF_NORMED).max() >= rule.get("threshold", 0.85):
+            if self._rule_matches(rule, screen):
                 return rule
         return {}
+
+    def _scroll_rule(self) -> dict:
+        """profile 的 scroll_rules 里第一个匹配当前画面的规则 没有时返回空字典"""
+        return self._first_matching_rule(profile().get("scroll_rules", []))
 
     def press_mouse(self, wait_time=0.2):
         """
@@ -190,6 +196,15 @@ class PlayCoverInput(InputBase):
         return {"escape": "esc", "space": "space"}.get(key, key)
 
     def _key_target(self, key: str):
+        """
+        按键对应的按钮
+
+        key_rules 按界面覆盖按键（同一个键在不同玩法里是不同按钮 如货币战争里 F 是购买经验）
+        """
+        rules = [rule for rule in profile().get("key_rules", []) if key in rule.get("keys", {})]
+        rule = self._first_matching_rule(rules)
+        if rule:
+            return rule["keys"][key]
         return profile().get("keys", {}).get(key)
 
     def press_key(self, key, wait_time=0.2):
