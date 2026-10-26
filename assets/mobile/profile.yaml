@@ -84,6 +84,8 @@ templates:
   "./assets/images/purefiction/prepare_fight.png": {threshold: 0.8}
   # 战斗右上角「未开启自动战斗」 不同战斗场景下 0.82~0.90 开启后约 0.34
   "./assets/images/share/base/not_auto.png": {threshold: 0.75}
+  # 货币战争选关 底部「敌人难度」数字 难度1约 0.88 难度2约 0.67
+  "./assets/images/screen/currency_wars/level_1.png": {scale: 1.25, threshold: 0.8}
   # 手机菜单的奖励红点（移动端红点在图标所在格子的右上角 和 PC 模板里的相对位置不同）
   "./assets/images/share/menu/quest_reward.png": {icon: "./assets/images/share/menu/guide.png", badge: [65, -55, 75, 70]}
   "./assets/images/share/menu/dispatch_reward.png": {icon: "./assets/images/share/menu/dispatch.png", badge: [65, -55, 75, 70]}
@@ -110,3 +112,5 @@ crops:
   "0,0,300,300": [0, 0, 400, 300]             # 忘却之庭/虚构叙事 左上角灯泡（移动端在 x=276~326）
   "6,8,778,168": [6, 100, 740, 90]            # 编队 角色列表/预设编队 标签
   "6,116,700,900": [40, 190, 670, 830]        # 编队 预设编队列表
+  "936,830,45,31": [930, 795, 60, 40]         # 货币战争选关 降低难度箭头
+  "440,892,385,137": [540, 900, 260, 140]     # 货币战争选关 底部敌人难度
