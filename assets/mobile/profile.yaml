@@ -30,6 +30,7 @@ layout:
   divergent_save_slot_ys: [265, 427, 590, 753]   # 差分宇宙存档管理 4 个存档位的纵坐标
   apocalyptic_star_width: 340                    # 末日幻影 关卡编号右侧到星星末尾的宽度（移动端星星在编号右侧 245~320 像素）
   challenge_forward_seconds_Apocalyptic: 7.5     # 末日幻影开局向前走的秒数（首领站在平台中央 4 秒走不到 实测第一间 6.5 第二间约 7.5）
+  challenge_forward_seconds_Apocalyptic_4: 3.5   # 难度 04 首领离出生点近 约 3 秒就到 7.5 秒会跑过头
 
 # 触控布局
 touch:

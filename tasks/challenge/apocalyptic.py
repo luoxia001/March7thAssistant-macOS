@@ -132,6 +132,7 @@ class Apocalyptic(BaseChallenge):
     def start_challenge(self, level):
         '''开始挑战'''
         # 每个关卡挑战2次，status 用于判断是否交换配队
+        self.current_level = level
         for status in [True, False]:
             log.info(f"开始挑战第{level:02}层")
             if level == 4 and not self.switch_to_normal_mode():

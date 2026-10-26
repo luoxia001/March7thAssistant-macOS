@@ -200,7 +200,10 @@ class BaseChallenge(ABC):
         '''使用秘技并攻击怪物'''
         # 靠近怪物 末日幻影的首领比忘却之庭/虚构叙事远 可按玩法覆盖前进时间
         from module import mobile
-        auto.press_key("w", mobile.layout(f"challenge_forward_seconds_{type(self).__name__}", 4))
+        # 末日幻影各难度地图不同 可再按难度覆盖（challenge_forward_seconds_Apocalyptic_4）
+        name = f"challenge_forward_seconds_{type(self).__name__}"
+        seconds = mobile.layout(f"{name}_{getattr(self, 'current_level', 0)}", None)
+        auto.press_key("w", seconds if seconds is not None else mobile.layout(name, 4))
 
         # 使用秘技
         last_index = None
