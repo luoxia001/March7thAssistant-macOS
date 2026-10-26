@@ -321,6 +321,9 @@ class Automation(metaclass=SingletonMeta):
                     return top_left, bottom_right, matchVal
             else:
                 if not math.isinf(matchVal) and (threshold is None or matchVal >= threshold):
+                    if mobile.rejected_by_color(target, screenshot, self.calculate_positions(template, matchLoc, True)):
+                        self.logger.debug(f"目标图片：{target.replace('./assets/images/', '')} 颜色不符 视为不匹配")
+                        return None, None, None
                     top_left, bottom_right = self.calculate_positions(template, matchLoc, relative)
                     return top_left, bottom_right, matchVal
         except Exception as e:

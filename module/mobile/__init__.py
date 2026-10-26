@@ -175,6 +175,29 @@ def template_alternatives(target: str) -> list:
     return list(conf.get("alternatives", []))
 
 
+def rejected_by_color(target: str, screenshot_bgr, box) -> bool:
+    """
+    模板匹配到的区域里出现 reject_color 指定颜色时 视为不匹配
+
+    用于状态图标：例如「未开启自动战斗」和「已开启」形状相同 只是开启后变成黄色 战斗特效会让形状匹配度很高
+    """
+    if not is_mobile():
+        return False
+    _, _, conf = template_info(target)
+    rule = conf.get("reject_color")
+    if not rule:
+        return False
+    import numpy as np
+    (x0, y0), (x1, y1) = box
+    pad = int(rule.get("pad", 8))
+    part = screenshot_bgr[max(y0 - pad, 0):y1 + pad, max(x0 - pad, 0):x1 + pad]
+    if part.size == 0:
+        return False
+    hsv = cv2.cvtColor(part, cv2.COLOR_BGR2HSV)
+    count = int(cv2.inRange(hsv, np.array(rule["lower"]), np.array(rule["upper"])).astype(bool).sum())
+    return count >= int(rule.get("min_pixels", 100))
+
+
 def mask_threshold(target: str) -> float:
     """带透明通道的模板在移动端的匹配阈值（TM_CCOEFF_NORMED）"""
     _, _, conf = template_info(target)
