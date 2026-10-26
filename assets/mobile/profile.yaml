@@ -13,6 +13,11 @@ scroll_step: 60
 # 滚轮转滑动的特殊规则 画面里能找到 template 时使用（template 写 PC 模板路径 按移动端比例缩放）
 #   axis: horizontal 横向滑动  at: 滑动起点  step: 每格距离
 scroll_rules:
+  - template: "./assets/mobile/images/ui/char_list_tab.png"    # 编队 左侧角色列表（每页 4 行约 790 像素 PC 滚轮 26 格一页）
+    region: [0, 100, 720, 120]
+    at: [360, 880]
+    step: 30
+    max_distance: 800
   - template: "./assets/images/screen/forgottenhall/memory_of_chaos.png"   # 忘却之庭 关卡横向排列
     region: [0, 0, 400, 150]
     axis: horizontal
@@ -117,6 +122,7 @@ templates:
   # 货币战争对局主界面 商店展开时退出按钮被「备战阶段」面板挡住 用面板文字作为备选
   "./assets/images/screen/currency_wars/exit.png": {scale: 1.25, alternatives: ["./assets/mobile/images/screen/currency_wars/exit_shop_open.png"]}
   "./assets/mobile/images/screen/currency_wars/exit_shop_open.png": {scale: 1.0, threshold: 0.85}
+  "./assets/mobile/images/ui/char_list_tab.png": {scale: 1.0}
   # 手机菜单的奖励红点（移动端红点在图标所在格子的右上角 和 PC 模板里的相对位置不同）
   "./assets/images/share/menu/quest_reward.png": {icon: "./assets/images/share/menu/guide.png", badge: [65, -55, 75, 70]}
   "./assets/images/share/menu/dispatch_reward.png": {icon: "./assets/images/share/menu/dispatch.png", badge: [65, -55, 75, 70]}
@@ -296,3 +302,5 @@ crops:
   "985,630,380,90": [700, 550, 900, 300]      # 确认（未实测 放宽）
   "900,900,1000,140": [450, 700, 1450, 340]   # 本轮存档/本局已存档（未实测 放宽）
   "980,935,400,90": [900, 920, 650, 120]      # 记录本次存档
+  "330,90,1562,1060": [230, 925, 1460, 85]    # 末日幻影 底部关卡 01~04
+  "30,110,550,850": [30, 180, 680, 770]       # 末日幻影编队 角色列表
