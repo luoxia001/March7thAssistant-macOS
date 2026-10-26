@@ -218,8 +218,8 @@ def start_game():
             raise RuntimeError("启动游戏失败")
         if not playcover_game.wait_maatools(360):
             raise TimeoutError("连接 MaaTools 超时，请确认 PlayCover 游戏设置里已打开 MaaTools")
-        # 已经在游戏内时不需要点击进入
-        if screen.get_current_screen(autotry=False, max_retries=1):
+        # 已经在游戏内时不需要点击进入（登录页本身也是一个可识别的界面 要排除）
+        if screen.get_current_screen(autotry=False, max_retries=1) and screen.current_screen not in ("click_enter", "start_game"):
             return
         if not wait_until(lambda: check_and_click_enter(), cfg.start_game_timeout * 60):
             raise TimeoutError("查找并点击进入按钮超时")
