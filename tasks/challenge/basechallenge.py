@@ -184,8 +184,9 @@ class BaseChallenge(ABC):
 
     def use_technique_and_attack_monster(self, team):
         '''使用秘技并攻击怪物'''
-        # 靠近怪物
-        auto.press_key("w", 4)
+        # 靠近怪物 末日幻影的首领比忘却之庭/虚构叙事远 可按玩法覆盖前进时间
+        from module import mobile
+        auto.press_key("w", mobile.layout(f"challenge_forward_seconds_{type(self).__name__}", 4))
 
         # 使用秘技
         last_index = None

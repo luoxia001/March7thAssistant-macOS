@@ -28,6 +28,7 @@ scroll_rules:
 # 业务代码里写死的布局数值
 layout:
   divergent_save_slot_ys: [265, 427, 590, 753]   # 差分宇宙存档管理 4 个存档位的纵坐标
+  challenge_forward_seconds_Apocalyptic: 7.5     # 末日幻影开局向前走的秒数（首领站在平台中央 4 秒走不到 实测第一间 6.5 第二间约 7.5）
 
 # 触控布局
 touch:
