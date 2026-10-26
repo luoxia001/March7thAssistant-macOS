@@ -205,21 +205,24 @@ class Apocalyptic(BaseChallenge):
             auto.take_screenshot(crop=(30 / 1920, 110 / 1080, 550 / 1920, 850 / 1080))
             # 选择角色
             for character in team_config:
-                if not auto.click_element(f"./assets/images/share/character/{character[0]}.png", "image", 0.7, max_retries=10, take_screenshot=False):
+                scrolling_counter = 0  # 统计滚动次数
+                max_scroll_times = 4  # 最多向下翻 4 页
+                while not auto.click_element(f"./assets/images/share/character/{character[0]}.png", "image", 0.7, max_retries=10, take_screenshot=False):
+                    if scrolling_counter >= max_scroll_times:
+                        log.error(f"没有找到角色{character[0]}")
+                        return False
                     # 尝试向下滚动
                     auto.click_element("等级", "text", include=True, action="move")
                     auto.mouse_scroll(26, -1, False)
                     time.sleep(1)
                     auto.click_element("角色列表", "text", include=True, action="move")
-                    if not auto.click_element(f"./assets/images/share/character/{character[0]}.png", "image", 0.7, max_retries=10, take_screenshot=False):
-                        log.error(f"没有找到角色{character[0]}")
-                        return False
-                    else:
-                        # 尝试向上滚动 恢复初始位置
-                        auto.click_element("等级", "text", include=True, action="move")
-                        auto.mouse_scroll(26, 1, False)
-                        time.sleep(1)
-                        auto.click_element("角色列表", "text", include=True, action="move")
+                    scrolling_counter += 1
+                for _ in range(scrolling_counter):
+                    # 尝试向上滚动 恢复初始位置
+                    auto.click_element("等级", "text", include=True, action="move")
+                    auto.mouse_scroll(26, 1, False)
+                    time.sleep(1)
+                    auto.click_element("角色列表", "text", include=True, action="move")
                 time.sleep(0.5)
             auto.click_element("节点一", "text", max_retries=20, crop=(963.0 / 1920, 209.0 / 1080, 798.0 / 1920, 252.0 / 1080), include=True)
             return True

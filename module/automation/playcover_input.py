@@ -128,6 +128,10 @@ class PlayCoverInput(InputBase):
                 # 横向排列的界面（如忘却之庭关卡）PC 滚轮向下对应内容向左移动
                 start = (x - sign * distance / 2, y)
                 end = (x + sign * distance / 2, y)
+            elif rule:
+                # 有规则时 at 是滑动的中点 上下滑动距离对称 避免靠近边缘时被截断
+                start = (x, y - sign * distance / 2)
+                end = (x, y + sign * distance / 2)
             else:
                 start = (x, y)
                 end = (x, min(max(y + sign * distance, 10), 1070))

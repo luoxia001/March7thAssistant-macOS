@@ -15,9 +15,9 @@ scroll_step: 60
 scroll_rules:
   - template: "./assets/mobile/images/ui/char_list_tab.png"    # 编队 左侧角色列表（每页 4 行约 790 像素 PC 滚轮 26 格一页）
     region: [0, 100, 720, 120]
-    at: [360, 880]
-    step: 30
-    max_distance: 800
+    at: [360, 540]           # 列表中部 作为滑动中点（起点要落在列表内 列表约 y=200~940）
+    step: 27
+    max_distance: 600        # 单次滑动两端都要落在列表内（540±300）
   - template: "./assets/images/screen/forgottenhall/memory_of_chaos.png"   # 忘却之庭 关卡横向排列
     region: [0, 0, 400, 150]
     axis: horizontal
@@ -115,6 +115,9 @@ templates:
   # 交互条图标 随意门是「➜」 事件是「💬」 差分宇宙事件位面里任一出现都算可以按 F
   # 通用的 share/base/F.png 不加💬 大世界里 NPC 对话也是💬 会误触剧情
   "./assets/images/screen/divergent_universe/f.png": {alternatives: ["./assets/mobile/images/screen/divergent_universe/f_event.png"]}
+  # 虚构叙事/末日幻影 选增益：第一张增益卡 和 装配效果按钮
+  "./assets/images/purefiction/choose.png": {scale: 1.2, threshold: 0.9}
+  "./assets/images/purefiction/confirm.png": {scale: 1.25, threshold: 0.85}
   "./assets/images/screen/currency_wars/level_1.png": {scale: 1.25, threshold: 0.8}
   # 角色信息面板的前台/后台图标 1.25 倍时对应 0.96 另一个 0.83
   "./assets/images/screen/currency_wars/pos_forward.png": {scale: 1.25}
