@@ -60,6 +60,10 @@ update_game_timeout: 12 # 更新游戏超时时间（时）。
 
 # 云崩铁配置
 cloud_game_enable: False # 是否启动云游戏
+playcover_enable: False # 是否操作 macOS 上 PlayCover 运行的 iOS 版（macOS 默认开启）
+playcover_bundle_id: com.HoYoverse.hkrpgoversea # PlayCover 游戏包名，国服为 com.miHoYo.hkrpg
+playcover_maatools_host: 127.0.0.1 # MaaTools 地址
+playcover_maatools_port: 1717 # MaaTools 端口（PlayCover 游戏设置里打开 MaaTools）
 cloud_game_fullscreen_enable: True # 云崩铁是否全屏运行
 cloud_game_use_paid_time: False # 是否使用付费时长
 cloud_game_max_queue_time: 60 # 最大排队等待时间（分钟）

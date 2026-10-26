@@ -1,0 +1,23 @@
+{
+  "./assets/images/screen/dispatch.png": 1.05,
+  "./assets/images/screen/guide/guide2.png": 1.05,
+  "./assets/images/screen/mail.png": 1.25,
+  "./assets/images/screen/main.png": 1.25,
+  "./assets/images/screen/pass/pass1.png": 1.25,
+  "./assets/images/screen/pass/pass2.png": 1.25,
+  "./assets/images/share/menu/achievement.png": 1.25,
+  "./assets/images/share/menu/achievement_reward.png": 1.25,
+  "./assets/images/share/menu/dispatch.png": 1.25,
+  "./assets/images/share/menu/guide.png": 1.25,
+  "./assets/images/share/menu/message.png": 1.25,
+  "./assets/images/share/menu/message_reward.png": 1.25,
+  "./assets/images/share/menu/more.png": 1.25,
+  "./assets/images/share/menu/pass.png": 1.25,
+  "./assets/images/share/menu/pass_reward.png": 1.25,
+  "./assets/images/share/menu/quest_reward.png": 1.25,
+  "./assets/images/share/reward/pass/enter_pass1.png": 1.35,
+  "./assets/images/share/reward/pass/enter_pass2.png": 1.4,
+  "./assets/images/share/reward/pass/lock.png": 1.25,
+  "./assets/images/zh_CN/base/click_close.png": 1.25,
+  "./assets/images/zh_CN/reward/quest/receive.png": 1.15
+}

@@ -115,6 +115,7 @@ def _is_retryable_io_error(e):
 # 环境变量值为 "true"/"1" 时为 True，"false"/"0" 时为 False
 _ENV_OVERRIDE_MAP = {
     "MARCH7TH_CLOUD_GAME_ENABLE": ("cloud_game_enable", lambda v: v.lower() in ("true", "1")),
+    "MARCH7TH_PLAYCOVER_ENABLE": ("playcover_enable", lambda v: v.lower() in ("true", "1")),
     "MARCH7TH_CLOUD_GAME_USE_PAID_TIME": ("cloud_game_use_paid_time", lambda v: v.lower() in ("true", "1")),
     "MARCH7TH_BROWSER_HEADLESS_ENABLE": ("browser_headless_enable", lambda v: v.lower() in ("true", "1")),
     "MARCH7TH_BROWSER_HEADLESS_RESTART_ON_NOT_LOGGED_IN": ("browser_headless_restart_on_not_logged_in", lambda v: v.lower() in ("true", "1")),

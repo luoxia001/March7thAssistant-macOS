@@ -12,7 +12,7 @@ class Screenshot:
 
     @staticmethod
     def is_application_fullscreen(window):
-        if cfg.cloud_game_enable:
+        if cfg.cloud_game_enable or cfg.playcover_enable:
             return True
         import pyautogui
         screen_width, screen_height = pyautogui.size()
@@ -20,7 +20,7 @@ class Screenshot:
 
     @staticmethod
     def get_window_real_resolution(window):
-        if cfg.cloud_game_enable:
+        if cfg.cloud_game_enable or cfg.playcover_enable:
             return 1920, 1080
         import win32gui  # 延迟导入，避免非 Windows 平台报错
         left, top, right, bottom = win32gui.GetClientRect(window._hWnd)
@@ -28,7 +28,7 @@ class Screenshot:
 
     @staticmethod
     def get_window_region(window):
-        if cfg.cloud_game_enable:
+        if cfg.cloud_game_enable or cfg.playcover_enable:
             return (0, 0, 1920, 1080)
         if Screenshot.is_application_fullscreen(window):
             return (window.left, window.top, window.width, window.height)
@@ -40,7 +40,7 @@ class Screenshot:
 
     @staticmethod
     def get_window(title):
-        if cfg.cloud_game_enable:
+        if cfg.cloud_game_enable or cfg.playcover_enable:
             return False  # TODO
         import pyautogui
         windows = pyautogui.getWindowsWithTitle(title)
@@ -127,6 +127,11 @@ class Screenshot:
 
     @staticmethod
     def take_screenshot(title, crop=(0, 0, 1, 1), use_background_screenshot=None, prefer_frame_screenshot=True):
+        if cfg.playcover_enable and not cfg.cloud_game_enable:
+            from module.game import playcover_game
+            from module.mobile import map_crop
+            return playcover_game.take_screenshot(crop=map_crop(crop)) or False
+
         if cfg.cloud_game_enable:
             from module.game import cloud_game
             screenshot_result = cloud_game.take_screenshot(crop=crop, prefer_frame=prefer_frame_screenshot)

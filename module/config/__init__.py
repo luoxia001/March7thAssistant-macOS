@@ -15,13 +15,16 @@ CONFIG_PATH = "./config.yaml"
 # Docker 环境和非 Windows 系统可通过设置这些环境变量来强制配置
 
 # 非 Windows 系统强制启用云游戏（通过设置环境变量实现）
-if sys.platform != 'win32':
+# macOS 默认操作 PlayCover 运行的 iOS 版，需要云游戏时设置 MARCH7TH_CLOUD_GAME_ENABLE=true
+if sys.platform == 'darwin':
+    os.environ.setdefault("MARCH7TH_PLAYCOVER_ENABLE", "true")
+elif sys.platform != 'win32':
     os.environ.setdefault("MARCH7TH_CLOUD_GAME_ENABLE", "true")
     
 cfg = Config(VERSION_PATH, EXAMPLE_PATH, CONFIG_PATH)
 
 cfg.env = os.environ.copy()
-cfg.env['PATH'] = os.path.dirname(cfg.python_exe_path) + ';' + cfg.env['PATH']
+cfg.env['PATH'] = os.path.dirname(cfg.python_exe_path) + os.pathsep + cfg.env['PATH']
 cfg.useragent = {"User-Agent": f"March7thAssistant/{cfg.version}"}
 
 if sys.platform == 'win32':

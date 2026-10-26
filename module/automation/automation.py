@@ -17,6 +17,7 @@ from utils.pause import pause_guard
 from module.game import get_game_controller
 from module.ocr import ocr
 from module.config import cfg
+from module import mobile
 
 
 _screenshot_retry_timeout = ContextVar("screenshot_retry_timeout", default=60.0)
@@ -238,22 +239,51 @@ class Automation(metaclass=SingletonMeta):
         :param relative: 是否返回相对位置。
         :return: 最佳匹配位置和相似度。
         """
+        badge = mobile.badge_config(target)
+        if badge is not None:
+            return self.find_mobile_badge_element(target, badge, relative)
         try:
-            if cacheable and target in self.img_cache:
-                mask = self.img_cache[target]['mask']
-                template = self.img_cache[target]['template']
-            else:
-                mask = ImageUtils.read_template_with_mask(target)  # 读取模板图片掩码
-                template = ImageUtils.read_image(target)  # 读取模板图片
-                if template is None:
-                    raise ValueError(f"读取图片失败：{target}")
-                if cacheable:
-                    self.img_cache[target] = {'mask': mask, 'template': template}
             screenshot = cv2.cvtColor(np.array(self.screenshot), cv2.COLOR_BGR2RGB)  # 将截图转换为RGB
-            if mask is not None:
-                matchVal, matchLoc = ImageUtils.scale_and_match_template(screenshot, template, threshold, scale_range, mask)  # 执行缩放并匹配模板
-            else:
-                matchVal, matchLoc = ImageUtils.scale_and_match_template(screenshot, template, threshold, scale_range)  # 执行缩放并匹配模板
+            # 移动端模板缩放比例不确定时 逐个比例尝试 取最好的结果
+            best = None
+            input_threshold = threshold
+            for mobile_scale in mobile.template_scales(target):
+                cache_key = target if mobile_scale == 1.0 else (target, mobile_scale)
+                if cacheable and cache_key in self.img_cache:
+                    mask = self.img_cache[cache_key]['mask']
+                    template = self.img_cache[cache_key]['template']
+                else:
+                    mask = mobile.read_template_mask(target, mobile_scale)  # 读取模板图片掩码
+                    template = mobile.read_template(target, scale=mobile_scale)  # 读取模板图片
+                    if template is None:
+                        raise ValueError(f"读取图片失败：{target}")
+                    if cacheable:
+                        self.img_cache[cache_key] = {'mask': mask, 'template': template}
+                if template.shape[0] > screenshot.shape[0] or template.shape[1] > screenshot.shape[1]:
+                    continue
+                scaled_threshold = mobile.template_threshold(target, input_threshold, mask is not None, mobile_scale)
+                if mask is not None and mobile.is_mobile():
+                    # 移动端画面和 PC 有细微差异 TM_SQDIFF 的绝对值没法用 PC 的阈值 改用带掩码的归一化相关系数
+                    matchVal, matchLoc = mobile.match_with_mask(screenshot, template, mask)
+                    scaled_threshold = mobile.mask_threshold(target)
+                    mask = None
+                    better = best is None or matchVal > best[0]
+                elif mask is not None:
+                    matchVal, matchLoc = ImageUtils.scale_and_match_template(screenshot, template, scaled_threshold, scale_range, mask)  # 执行缩放并匹配模板
+                    better = best is None or matchVal < best[0]
+                else:
+                    matchVal, matchLoc = ImageUtils.scale_and_match_template(screenshot, template, scaled_threshold, scale_range)  # 执行缩放并匹配模板
+                    better = best is None or matchVal > best[0]
+                if better:
+                    best = (matchVal, matchLoc, mask, template, scaled_threshold, mobile_scale)
+                if mask is None and scaled_threshold is not None and matchVal >= scaled_threshold:
+                    break
+            if best is None:
+                return None, None, None
+            matchVal, matchLoc, mask, template, threshold, mobile_scale = best
+            # 阈值太低时匹配结果不可靠 不记录比例
+            if mobile.is_mobile() and threshold is not None and threshold >= 0.6 and matchVal >= threshold:
+                mobile.learn_scale(target, mobile_scale)
 
             # 这里的相似度文本说明有问题，对于无mask匹配相似度越高越好。有mask匹配则是越低越好
             self.logger.debug(f"目标图片：{target.replace('./assets/images/', '')} 相似度：{matchVal:.2f} 匹配阈值：{threshold}")
@@ -284,6 +314,23 @@ class Automation(metaclass=SingletonMeta):
             self.logger.error(f"寻找图片出错：{e}")
         return None, None, None
 
+    def find_mobile_badge_element(self, target, badge, relative=False):
+        """移动端带红点的模板：先找图标 再检查图标右上方有没有红点"""
+        icon, region = badge
+        top_left, bottom_right, value = self.find_image_element(icon, mobile.mask_threshold(icon), None, relative=True)
+        if top_left is None:
+            self.logger.debug(f"目标图片：{target.replace('./assets/images/', '')} 未找到图标")
+            return None, None, None
+        screenshot = cv2.cvtColor(np.array(self.screenshot), cv2.COLOR_RGB2BGR)
+        found = mobile.has_red_badge(screenshot, (top_left[0] + region[0], top_left[1] + region[1], region[2], region[3]))
+        self.logger.debug(f"目标图片：{target.replace('./assets/images/', '')} 图标相似度：{value:.2f} 红点：{found}")
+        if not found:
+            return None, None, None
+        if not relative:
+            top_left = (top_left[0] + self.screenshot_pos[0], top_left[1] + self.screenshot_pos[1])
+            bottom_right = (bottom_right[0] + self.screenshot_pos[0], bottom_right[1] + self.screenshot_pos[1])
+        return top_left, bottom_right, value
+
     def generate_black_white_map(self, pixel_bgr):
         """生成黑白图，标记与目标像素相似的区域。
 
@@ -310,7 +357,7 @@ class Automation(metaclass=SingletonMeta):
         - 匹配的数量，或在出错时返回 None。
         """
         try:
-            template = ImageUtils.read_image(target, cv2.IMREAD_GRAYSCALE)
+            template = mobile.read_template(target, cv2.IMREAD_GRAYSCALE)
             if template is None:
                 raise ValueError(f"读取图片失败：{target}")
             bw_map = self.generate_black_white_map(pixel_bgr)
@@ -324,9 +371,10 @@ class Automation(metaclass=SingletonMeta):
     @pause_guard
     def find_image_with_multiple_targets(self, target, threshold, scale_range, relative=False, mask_top_right_ratio=None):
         try:
-            template = ImageUtils.read_image(target, cv2.IMREAD_GRAYSCALE)
+            template = mobile.read_template(target, cv2.IMREAD_GRAYSCALE)
             if template is None:
                 raise ValueError(f"读取图片失败：{target}")
+            threshold = mobile.template_threshold(target, threshold, False)
             screenshot = cv2.cvtColor(np.array(self.screenshot), cv2.COLOR_BGR2GRAY)
             matches = ImageUtils.scale_and_match_template_with_multiple_targets(
                 screenshot, template, threshold, scale_range, mask_top_right_ratio=mask_top_right_ratio
@@ -797,6 +845,7 @@ class Automation(metaclass=SingletonMeta):
                 elif find_type == 'min_distance_text':
                     top_left, bottom_right = self.find_min_distance_text_element(target, source, source_type, include, need_ocr, position)
                 elif find_type == 'crop':
+                    target = mobile.map_crop(target)
                     scale_factor = self.screenshot_scale_factor if not relative else 1
                     offset_x = self.screenshot_pos[0] * (not relative)
                     offset_y = self.screenshot_pos[1] * (not relative)

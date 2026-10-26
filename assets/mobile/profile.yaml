@@ -1,0 +1,70 @@
+# iOS 版（PlayCover）画面适配配置
+# 坐标都是 1920x1080 标准坐标
+
+# PC 模板在移动端默认放大的倍数（移动端 UI 约为 PC 的 1.25 倍）
+template_scale: 1.25
+
+# 带透明通道的模板在移动端改用 TM_CCOEFF_NORMED 匹配 这是默认阈值
+mask_threshold: 0.7
+
+# 鼠标滚轮每格对应的滑动距离
+scroll_step: 60
+
+# 触控布局
+touch:
+  joystick: [330, 830]        # 左下虚拟摇杆中心
+  joystick_radius: 140
+  phone: [54, 92]             # 左上手机菜单
+  map: [160, 180]             # 小地图
+  attack: [1598, 822]         # 普通攻击
+  technique: [1404, 922]      # 秘技
+  sprint: [1776, 920]         # 疾跑
+  interact: [1240, 630]       # 交互提示第一项
+  warp: [1208, 58]            # 顶栏跃迁
+  team1: [1780, 265]
+  team2: [1780, 382]
+  team3: [1780, 498]
+  team4: [1780, 615]
+  back_fallback: [1848, 55]   # 识别不到返回按钮时点右上角关闭位置
+
+# PC 按键 → touch 里的按钮名
+keys:
+  e: technique
+  f: interact
+  shift: sprint
+  m: map
+  f3: warp
+  "1": team1
+  "2": team2
+  "3": team3
+  "4": team4
+
+# Esc 时依次查找的按钮 第一个找到的会被点击
+back_buttons:
+  - template: phone
+    region: [0, 40, 140, 120]
+    threshold: 0.8
+  - template: close
+    region: [1740, 0, 180, 150]
+    threshold: 0.75
+
+# 单个模板的覆盖配置（键是 PC 模板路径）
+#   scale: 缩放比例  threshold: 移动端匹配阈值
+# assets/mobile/images/ 下同路径的图片会替换 PC 模板 默认不缩放
+#   icon + badge: 带红点的模板 先找 icon 再检查 icon 左上角为原点的 badge 区域 [x, y, w, h] 里有没有红点
+templates:
+  # 手机菜单的奖励红点（移动端红点在图标所在格子的右上角 和 PC 模板里的相对位置不同）
+  "./assets/images/share/menu/quest_reward.png": {icon: "./assets/images/share/menu/guide.png", badge: [65, -55, 75, 70]}
+  "./assets/images/share/menu/dispatch_reward.png": {icon: "./assets/images/share/menu/dispatch.png", badge: [65, -55, 75, 70]}
+  "./assets/images/share/menu/pass_reward.png": {icon: "./assets/images/share/menu/pass.png", badge: [65, -55, 75, 70]}
+  "./assets/images/share/menu/achievement_reward.png": {icon: "./assets/images/share/menu/achievement.png", badge: [65, -55, 75, 70]}
+  "./assets/images/share/menu/message_reward.png": {icon: "./assets/images/share/menu/message.png", badge: [65, -55, 75, 70]}
+  "./assets/images/share/menu/assist_reward.png": {icon: "./assets/images/share/menu/more.png", badge: [20, -45, 70, 50]}
+
+# PC 裁剪区域 → 移动端裁剪区域（标准像素 "x,y,w,h": [x, y, w, h]）
+crops:
+  "1846,253,43,37": [1830, 316, 52, 50]   # 手机菜单右侧 邮件
+  "1264,286,546,746": [1110, 380, 660, 660]   # 手机菜单 功能图标区域
+  "1263,52,642,982": [1100, 20, 820, 1050]    # 手机菜单 奖励红点检测区域
+  "1823,224,91,92": [1815, 290, 105, 105]     # 手机菜单右侧 邮件红点
+

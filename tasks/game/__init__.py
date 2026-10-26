@@ -11,7 +11,7 @@ from .starrailcontroller import StarRailController
 from utils.date import Date
 from utils.console import pause_on_success
 from tasks.power.power import Power
-from module.game import cloud_game, get_game_controller
+from module.game import cloud_game, playcover_game, get_game_controller
 from module.game.cloud import CloudGameLoginTimeoutError
 from module.logger import log
 from module.screen import screen
@@ -213,20 +213,31 @@ def start_game():
                 raise TimeoutError("查找并点击进入按钮超时")
             time.sleep(10)
 
+    def start_playcover_game():
+        if not playcover_game.start_game_process():
+            raise RuntimeError("启动游戏失败")
+        if not playcover_game.wait_maatools(360):
+            raise TimeoutError("连接 MaaTools 超时，请确认 PlayCover 游戏设置里已打开 MaaTools")
+        # 已经在游戏内时不需要点击进入
+        if screen.get_current_screen(autotry=False, max_retries=1):
+            return
+        if not wait_until(lambda: check_and_click_enter(), cfg.start_game_timeout * 60):
+            raise TimeoutError("查找并点击进入按钮超时")
+        time.sleep(10)
+
     for retry in range(MAX_RETRY):
         try:
             if cfg.cloud_game_enable:
                 start_cloud_game()
+            elif cfg.playcover_enable:
+                start_playcover_game()
             else:
                 starrail = StarRailController(cfg=cfg, logger=log)
                 start_local_game(starrail)
             if not wait_until(lambda: screen.get_current_screen(), 6 * 60):
                 log.error("获取当前界面超时")
                 # 确保在重试前停止游戏
-                if cfg.cloud_game_enable:
-                    cloud_game.stop_game()
-                else:
-                    starrail.stop_game()
+                get_game_controller().stop_game()
                 continue
             break
         except CloudGameLoginTimeoutError:
@@ -234,8 +245,8 @@ def start_game():
         except Exception as e:
             log.error(f"尝试启动游戏时发生错误：{e}")
             # 确保在重试前停止游戏
-            if cfg.cloud_game_enable:
-                cloud_game.stop_game()
+            if cfg.cloud_game_enable or cfg.playcover_enable:
+                get_game_controller().stop_game()
             else:
                 starrail.stop_game()
                 # 非云游戏模式下，若检测到是版本过低则尝试通过启动器更新
