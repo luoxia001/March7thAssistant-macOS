@@ -67,6 +67,11 @@ back_buttons:
   - template: close
     region: [1740, 0, 180, 150]
     threshold: 0.75
+  # 文字按钮 when 限定弹窗标题（PC 上这些弹窗按 Esc 关闭 移动端只能点按钮）
+  - text: 确认
+    region: [700, 930, 520, 120]
+    when: 快速通关
+    when_region: [600, 60, 720, 110]
 
 # 单个模板的覆盖配置（键是 PC 模板路径）
 #   scale: 缩放比例  threshold: 移动端匹配阈值

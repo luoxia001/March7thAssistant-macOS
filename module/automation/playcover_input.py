@@ -299,6 +299,25 @@ class PlayCoverInput(InputBase):
             return None
         return x + max_loc[0] + template.shape[1] // 2, y + max_loc[1] + template.shape[0] // 2
 
+    def _ocr_texts(self, screen, region):
+        from module.ocr import ocr
+        x, y, w, h = region
+        part = cv2.cvtColor(screen[y:y + h, x:x + w], cv2.COLOR_BGR2RGB)
+        results = ocr.convert_format(ocr.run(part)) or []
+        return [(box, text) for box, (text, _) in results], (x, y)
+
+    def _match_text(self, screen, item):
+        """按文字找按钮 when 指定时要求 when_region 里先出现这段文字（用来限定弹窗）"""
+        if "when" in item:
+            texts, _ = self._ocr_texts(screen, item.get("when_region", [0, 0, 1920, 1080]))
+            if not any(item["when"] in text for _, text in texts):
+                return None
+        texts, (ox, oy) = self._ocr_texts(screen, item["region"])
+        for box, text in texts:
+            if item["text"] in text:
+                return ox + (box[0][0] + box[2][0]) / 2, oy + (box[0][1] + box[2][1]) / 2
+        return None
+
     def back(self) -> None:
         """
         PC 的 Esc 在移动端的等效操作
@@ -309,9 +328,12 @@ class PlayCoverInput(InputBase):
         screen = self.game.screenshot_bgr()
         if screen is not None:
             for item in profile().get("back_buttons", []):
-                pos = self._match(screen, item["template"], item["region"], item.get("threshold", 0.8))
+                if "text" in item:
+                    pos = self._match_text(screen, item)
+                else:
+                    pos = self._match(screen, item["template"], item["region"], item.get("threshold", 0.8))
                 if pos is not None:
-                    self.logger.debug(f"Esc → 点击 {item['template']} {pos}")
+                    self.logger.debug(f"Esc → 点击 {item.get('template') or item['text']} {pos}")
                     self.tap(*pos)
                     return
         fallback = profile()["touch"].get("back_fallback")
