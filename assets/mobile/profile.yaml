@@ -47,7 +47,7 @@ keys:
   m: map
   f3: warp
   p: message
-  v: auto_battle
+  v: {button: auto_battle, wait: 1.5}   # 点完等图标变色 避免连点又关掉
   "1": team1
   "2": team2
   "3": team3

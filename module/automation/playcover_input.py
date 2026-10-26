@@ -244,7 +244,7 @@ class PlayCoverInput(InputBase):
             return
         point = self._button_point(target)
         if point is not None:
-            self._button_pressed = target
+            self._button_pressed = target["button"] if isinstance(target, dict) else target
             self._touch(TouchPhase.BEGAN, point[0], point[1], CONTACT_BUTTON)
 
     def press_key_up(self, key):
@@ -259,6 +259,8 @@ class PlayCoverInput(InputBase):
                     self._touch(TouchPhase.ENDED, center[0], center[1], CONTACT_JOYSTICK)
             return
         target = self._key_target(key)
+        if isinstance(target, dict):
+            target = target["button"]
         if target is not None and self._button_pressed == target:
             point = self._button_point(target)
             self._touch(TouchPhase.ENDED, point[0], point[1], CONTACT_BUTTON)
@@ -283,6 +285,8 @@ class PlayCoverInput(InputBase):
             self._touch(TouchPhase.MOVED, x, y, CONTACT_JOYSTICK)
 
     def _button_point(self, target):
+        if isinstance(target, dict):
+            target = target["button"]
         if isinstance(target, (list, tuple)):
             return target
         point = profile()["touch"].get(target)
@@ -294,6 +298,9 @@ class PlayCoverInput(InputBase):
         point = self._button_point(target)
         if point is not None:
             self.tap(point[0], point[1], press_time=press_time, contact=CONTACT_BUTTON)
+            # 有些按钮点完后界面要过一会才变化（如自动战斗图标变色） 等待避免调用方立刻再点一次
+            if isinstance(target, dict) and target.get("wait"):
+                time.sleep(float(target["wait"]))
 
     # ---------- Esc ----------
 
