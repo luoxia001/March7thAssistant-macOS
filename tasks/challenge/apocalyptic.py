@@ -122,7 +122,9 @@ class Apocalyptic(BaseChallenge):
         '''判断星数'''
         window = Screenshot.get_window(cfg.game_title_name)
         _, _, width, height = Screenshot.get_window_region(window)
-        crop = (top_left[0] / width, top_left[1] / height, 278.0 / 1920, 123.0 / 1080)
+        from module import mobile
+        star_width = mobile.layout("apocalyptic_star_width", 278.0)
+        crop = (top_left[0] / width, top_left[1] / height, star_width / 1920, 123.0 / 1080)
         count = auto.find_element("./assets/images/purefiction/star.png", "image_count", 0.5, crop=crop, pixel_bgr=[95, 198, 255])
         # log.info(f"star count:{count}")
         return count if count is not None and 0 <= count <= 3 else None
