@@ -114,20 +114,73 @@ class PlayCoverInput(InputBase):
 
         direction=-1 是向下滚动 内容向上移动 所以手指向上滑
         """
-        step = float(profile().get("scroll_step", 60))
-        x, y = self._cursor
-        distance = min(step * count, 600)
-        end_y = y - distance if direction < 0 else y + distance
-        end_y = min(max(end_y, 10), 1070)
-        # 结束时停顿一下再抬起 避免列表惯性继续滚动
-        self.swipe((x, y), (x, end_y), duration=0.4 + 0.02 * count, hold_end=0.3)
-        self.logger.debug(f"触控滚动 {count} 次 方向 {direction}")
+        rule = self._scroll_rule()
+        step = float(rule.get("step", profile().get("scroll_step", 60)))
+        max_distance = float(rule.get("max_distance", 600))
+        total = step * count
+        sign = -1 if direction < 0 else 1
+        x, y = rule.get("at", self._cursor)
+        # 一次滑动距离有限 滚动很多格时分几次滑
+        for _ in range(min(max(math.ceil(total / max_distance), 1), 5)):
+            distance = min(total, max_distance)
+            total -= distance
+            if rule.get("axis") == "horizontal":
+                # 横向排列的界面（如忘却之庭关卡）PC 滚轮向下对应内容向左移动
+                start = (x - sign * distance / 2, y)
+                end = (x + sign * distance / 2, y)
+            else:
+                start = (x, y)
+                end = (x, min(max(y + sign * distance, 10), 1070))
+            # 结束时停顿一下再抬起 避免列表惯性继续滚动
+            self.swipe(start, end, duration=0.4 + 0.02 * count, hold_end=0.3)
+            self.logger.debug(f"触控滚动 {count} 次 方向 {direction} {start} -> {end}")
+            if total <= 0:
+                break
         if pause:
             time.sleep(0.3)
 
+    def _scroll_rule(self) -> dict:
+        """profile 的 scroll_rules 里第一个匹配当前画面的规则 没有时返回空字典"""
+        rules = profile().get("scroll_rules", [])
+        if not rules:
+            return {}
+        screen = self.game.screenshot_bgr()
+        if screen is None:
+            return {}
+        from module import mobile
+        for rule in rules:
+            template = mobile.read_template(rule["template"])
+            if template is None:
+                continue
+            x, y, w, h = rule.get("region", [0, 0, 1920, 1080])
+            part = screen[y:y + h, x:x + w]
+            if part.shape[0] < template.shape[0] or part.shape[1] < template.shape[1]:
+                continue
+            if cv2.matchTemplate(part, template, cv2.TM_CCOEFF_NORMED).max() >= rule.get("threshold", 0.85):
+                return rule
+        return {}
+
     def press_mouse(self, wait_time=0.2):
-        """PC 大世界里左键是普通攻击"""
-        self._press_button("attack", wait_time)
+        """
+        PC 大世界里左键是普通攻击
+
+        有些状态下移动端没有普攻按钮 左键的功能换到了别的按钮上（如流萤秘技飞起后在秘技位置变成「下落」）
+        profile 的 attack_alternatives 按区域文字识别这些状态
+        """
+        target = "attack"
+        rules = profile().get("attack_alternatives", [])
+        screen = self.game.screenshot_bgr() if rules else None
+        if screen is not None:
+            from module.ocr import ocr
+            for rule in rules:
+                x, y, w, h = rule["region"]
+                part = cv2.cvtColor(screen[y:y + h, x:x + w], cv2.COLOR_BGR2RGB)
+                result = ocr.recognize_single_line(part)
+                if result and rule["text"] in result[0]:
+                    self.logger.debug(f"左键 → {rule['text']} {rule['tap']}")
+                    target = rule["tap"]
+                    break
+        self._press_button(target, wait_time)
 
     # ---------- 键盘 ----------
 

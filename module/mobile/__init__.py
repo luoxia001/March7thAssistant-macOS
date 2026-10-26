@@ -60,6 +60,15 @@ LEARNED_SCALES_PATH = "./assets/mobile/learned_scales.json"
 _learned_scales: dict | None = None
 
 
+def _template_conf(key: str) -> dict:
+    """模板配置 键以 / 结尾时对整个目录生效 文件自己的配置优先"""
+    templates = profile()["templates"]
+    if key in templates:
+        return templates[key] or {}
+    prefixes = [k for k in templates if k.endswith("/") and key.startswith(k)]
+    return (templates[max(prefixes, key=len)] or {}) if prefixes else {}
+
+
 def template_info(target: str) -> tuple[str, float | None, dict]:
     """
     PC 模板在移动端的实际文件和缩放
@@ -68,7 +77,7 @@ def template_info(target: str) -> tuple[str, float | None, dict]:
         (文件路径, 缩放比例 没有确定时为 None, 该模板的额外配置)
     """
     key = _normalize_path(target)
-    conf = profile()["templates"].get(key, {}) or {}
+    conf = _template_conf(key)
     mobile_path = _mobile_image_path(target)
     if mobile_path is not None:
         return mobile_path, float(conf.get("scale", 1.0)), conf
@@ -101,7 +110,7 @@ def learn_scale(target: str, scale: float) -> None:
     """记住模板匹配成功时的缩放比例 之后只用这个比例匹配"""
     key = _normalize_path(target)
     learned = _load_learned_scales()
-    if key in profile()["templates"] or _mobile_image_path(target) is not None or learned.get(key) == scale:
+    if "scale" in _template_conf(key) or _mobile_image_path(target) is not None or learned.get(key) == scale:
         return
     learned[key] = scale
     try:

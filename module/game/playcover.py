@@ -136,10 +136,11 @@ class PlayCoverGameController(GameControllerBase):
         image = self.screenshot_bgr()
         if image is None:
             return None
-        left = int(STANDARD_WIDTH * crop[0])
-        top = int(STANDARD_HEIGHT * crop[1])
-        width = int(STANDARD_WIDTH * crop[2])
-        height = int(STANDARD_HEIGHT * crop[3])
+        # 调用方算出的裁剪区域可能超出画面 限制在画面内
+        left = min(max(int(STANDARD_WIDTH * crop[0]), 0), STANDARD_WIDTH - 1)
+        top = min(max(int(STANDARD_HEIGHT * crop[1]), 0), STANDARD_HEIGHT - 1)
+        width = max(min(int(STANDARD_WIDTH * crop[2]), STANDARD_WIDTH - left), 1)
+        height = max(min(int(STANDARD_HEIGHT * crop[3]), STANDARD_HEIGHT - top), 1)
         image = image[top:top + height, left:left + width]
         screenshot = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
         return screenshot, (left, top, width, height), 1

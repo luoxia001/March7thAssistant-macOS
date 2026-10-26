@@ -192,6 +192,12 @@ class Automation(metaclass=SingletonMeta):
                 )
                 if result:
                     self.screenshot, self.screenshot_pos, self.screenshot_scale_factor = result
+                    # 移动端裁剪区域可能被替换 记录实际原点相对 PC 裁剪原点的偏移
+                    # relative=True 的结果加上这个偏移 调用方按 PC 裁剪原点换算出的绝对坐标仍然正确
+                    if mobile.is_mobile():
+                        self.relative_shift = (self.screenshot_pos[0] - round(1920 * crop[0]), self.screenshot_pos[1] - round(1080 * crop[1]))
+                    else:
+                        self.relative_shift = (0, 0)
                     # 调试模式：清除上一帧的矩形框，并显示裁剪区域
                     if self._is_debug_enabled():
                         self._ensure_debug_overlay()
@@ -857,6 +863,8 @@ class Automation(metaclass=SingletonMeta):
                     top_left, bottom_right = self.find_hsv_element(target, relative)
                 elif find_type == 'yolo':
                     top_left, bottom_right = self.find_yolo_element(target, threshold or 0.25, relative)
+                if top_left and bottom_right and relative and find_type != 'crop':
+                    top_left, bottom_right = self._shift_relative(top_left), self._shift_relative(bottom_right)
                 if top_left and bottom_right:
                     # 调试模式：绘制查找结果的矩形框
                     if self._is_debug_enabled():
@@ -873,6 +881,8 @@ class Automation(metaclass=SingletonMeta):
                 matches = self.find_image_with_multiple_targets(
                     target, threshold, scale_range, relative, mask_top_right_ratio=mask_top_right_ratio
                 )
+                if relative and matches:
+                    matches = [(self._shift_relative(a), self._shift_relative(b)) for a, b in matches]
                 # 调试模式：绘制所有匹配结果
                 if self._is_debug_enabled() and matches:
                     color = self._get_debug_color(find_type)
@@ -895,6 +905,11 @@ class Automation(metaclass=SingletonMeta):
             if i < max_retries - 1:
                 time.sleep(retry_delay)  # 在重试前等待一定时间
         return None
+
+    def _shift_relative(self, point):
+        """移动端裁剪区域被替换时 把相对实际裁剪区域的坐标换算成相对 PC 裁剪区域的坐标"""
+        dx, dy = getattr(self, 'relative_shift', (0, 0))
+        return (point[0] + dx, point[1] + dy)
 
     def shutdown_debug(self):
         """关闭调试叠加层。"""
