@@ -103,6 +103,20 @@ class BaseChallenge(ABC):
             return True
         return False
 
+    def switch_to_normal_mode(self):
+        '''最高难度有星启模式 挑战前切换回常规模式（忘却之庭第12层 末日幻影难度04）'''
+        for _ in range(3):
+            result = auto.find_element("星启模式", "text", max_retries=2, include=True)
+            if not result:
+                return True
+            # 切换按钮在文字左侧 中心距文字左边约 1 个文字宽度
+            (left, top), (right, bottom) = result
+            width = right - left
+            auto.click_element_with_pos(((left - int(width * 1.25), top), (left - int(width * 0.75), bottom)))
+            log.info("关闭星启模式")
+            time.sleep(2)
+        return not auto.find_element("星启模式", "text", max_retries=2, include=True)
+
     def select_preset_team(self, preset, team_image_path):
         '''从「预设编队」里选择队伍填入指定的队伍位置'''
         # 先选中要填入的队伍位置 再点预设 预设会填入当前选中的位置

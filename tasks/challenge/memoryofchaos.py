@@ -143,20 +143,6 @@ class MemoryOfChaos(BaseChallenge):
 
         return False
 
-    def switch_to_normal_mode(self):
-        '''第12层有星启模式 挑战前切换回常规模式'''
-        for _ in range(3):
-            result = auto.find_element("星启模式", "text", max_retries=2, include=True)
-            if not result:
-                return True
-            # 切换按钮在文字左侧 中心距文字左边约 1 个文字宽度
-            (left, top), (right, bottom) = result
-            width = right - left
-            auto.click_element_with_pos(((left - int(width * 1.25), top), (left - int(width * 0.75), bottom)))
-            log.info("关闭星启模式")
-            time.sleep(2)
-        return not auto.find_element("星启模式", "text", max_retries=2, include=True)
-
     def prepare_level(self, status):
         '''配置队伍'''
         if auto.find_element("./assets/images/forgottenhall/team1.png", "image", 0.8, max_retries=10, crop=(592.0 / 1920, 556.0 / 1080, 256.0 / 1920, 424.0 / 1080)):

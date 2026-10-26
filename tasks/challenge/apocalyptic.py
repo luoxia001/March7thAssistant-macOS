@@ -132,6 +132,9 @@ class Apocalyptic(BaseChallenge):
         # 每个关卡挑战2次，status 用于判断是否交换配队
         for status in [True, False]:
             log.info(f"开始挑战第{level:02}层")
+            if level == 4 and not self.switch_to_normal_mode():
+                log.error("关闭星启模式失败")
+                return False
             if not auto.click_element(f"{level:02}", "text", max_retries=20, crop=(330.0 / 1920, 90.0 / 1080, 1562.0 / 1920, 1060.0 / 1080), include=True):
                 log.error("点击关卡失败")
                 return False
@@ -293,10 +296,14 @@ class Apocalyptic(BaseChallenge):
                 else:
                     auto.click_element("挑战结束", "text", max_retries=10, crop=(0, 0, 1, 1), include=True)
                     time.sleep(2)
-                    if auto.click_element("./assets/images/apocalyptic/back.png", "image", 0.8, 10):
-                        return True
-                    else:
-                        return False
+                    # 结算动画期间点击无效 点到离开结算页为止
+                    for _ in range(5):
+                        if not auto.click_element("./assets/images/apocalyptic/back.png", "image", 0.8, 10):
+                            break
+                        time.sleep(3)
+                        if not auto.find_element("./assets/images/apocalyptic/back.png", "image", 0.8):
+                            return True
+                    return False
             elif self.auto_battle_detect_enable and auto.find_element("./assets/images/share/base/not_auto.png", "image", 0.8, crop=(0.0 / 1920, 903.0 / 1080, 144.0 / 1920, 120.0 / 1080)):
                 log.info("尝试开启自动战斗")
                 auto.press_key(cfg.get_value("hotkey_auto_battle", "v"))
