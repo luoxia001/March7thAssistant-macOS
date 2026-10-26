@@ -140,6 +140,8 @@ class Apocalyptic(BaseChallenge):
             if not auto.click_element(f"{level:02}", "text", max_retries=20, crop=(330.0 / 1920, 90.0 / 1080, 1562.0 / 1920, 1060.0 / 1080), include=True):
                 log.error("点击关卡失败")
                 return False
+            # 等上一个关卡的面板（如「更换编队」）收起 避免误点
+            time.sleep(1.5)
             # 如果已经挑战过
             if auto.click_element("更换编队", "text", max_retries=20, crop=(1624.0 / 1920, 804.0 / 1080, 292.0 / 1920, 68.0 / 1080), include=True):
                 log.info("更换队伍")
