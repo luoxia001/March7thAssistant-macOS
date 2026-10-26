@@ -1,6 +1,10 @@
 {
+  "./assets/images/forgottenhall/again.png": 1.25,
+  "./assets/images/forgottenhall/back.png": 1.25,
+  "./assets/images/forgottenhall/receive.png": 1.3,
   "./assets/images/forgottenhall/reset.png": 1.25,
   "./assets/images/forgottenhall/start.png": 1.25,
+  "./assets/images/forgottenhall/switch.png": 1.25,
   "./assets/images/forgottenhall/team1.png": 1.25,
   "./assets/images/forgottenhall/team2.png": 1.25,
   "./assets/images/purefiction/prepare_fight.png": 1.0,
@@ -17,6 +21,7 @@
   "./assets/images/screen/pass/pass1.png": 1.25,
   "./assets/images/screen/pass/pass2.png": 1.25,
   "./assets/images/screen/start_game.png": 1.25,
+  "./assets/images/share/base/RedExclamationMark.png": 1.25,
   "./assets/images/share/menu/achievement.png": 1.25,
   "./assets/images/share/menu/achievement_reward.png": 1.25,
   "./assets/images/share/menu/dispatch.png": 1.25,

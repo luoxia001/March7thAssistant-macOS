@@ -114,6 +114,10 @@ class MemoryOfChaos(BaseChallenge):
         for status in [True, False]:
             log.info(f"开始挑战第{level:02}层")
 
+            if level == 12 and not self.switch_to_normal_mode():
+                log.error("关闭星启模式失败")
+                return False
+
             if not auto.click_element(f"{level:02}", "text", max_retries=20, crop=(540.0 / 1920, 406.0 / 1080, 1156.0 / 1920, 516.0 / 1080)):
                 log.error("点击关卡失败")
                 return False
@@ -135,6 +139,20 @@ class MemoryOfChaos(BaseChallenge):
                 log.error("战斗失败")
 
         return False
+
+    def switch_to_normal_mode(self):
+        '''第12层有星启模式 挑战前切换回常规模式'''
+        for _ in range(3):
+            result = auto.find_element("星启模式", "text", max_retries=2, include=True)
+            if not result:
+                return True
+            # 切换按钮在文字左侧 中心距文字左边约 1 个文字宽度
+            (left, top), (right, bottom) = result
+            width = right - left
+            auto.click_element_with_pos(((left - int(width * 1.25), top), (left - int(width * 0.75), bottom)))
+            log.info("关闭星启模式")
+            time.sleep(2)
+        return not auto.find_element("星启模式", "text", max_retries=2, include=True)
 
     def prepare_level(self, status):
         '''配置队伍'''
