@@ -52,7 +52,7 @@ The original drives the PC client through Win32 screenshots and keyboard/mouse. 
 1. Install the hguandl fork of PlayCover, then install the Star Rail IPA into it (see the [PlayCover docs](https://docs.playcover.io/) for obtaining IPAs).
 2. In PlayCover, right-click the game → Settings:
    - **MaaTools: on, port `1717` (required)**
-   - Aspect ratio **16:9**; tested at 4K (3840×2160)
+   - Aspect ratio **16:9**; resolution **1920×1080** (the setting used for development and testing)
 3. Launch the game once, log in, finish downloading resources, and set the game text language to **Simplified Chinese**.
 4. Install tools and the project:
 
