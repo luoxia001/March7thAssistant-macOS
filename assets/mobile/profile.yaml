@@ -142,6 +142,8 @@ templates:
   "./assets/images/share/menu/quest_reward.png": {icon: "./assets/images/share/menu/guide.png", badge: [65, -55, 75, 70]}
   "./assets/images/share/menu/dispatch_reward.png": {icon: "./assets/images/share/menu/dispatch.png", badge: [65, -55, 75, 70]}
   "./assets/images/share/menu/pass_reward.png": {icon: "./assets/images/share/menu/pass.png", badge: [65, -55, 75, 70]}
+  # 无名勋礼 任务页左侧「奖励」图标 带红点时按学到的 1.35 只有 0.896
+  "./assets/images/share/reward/pass/enter_pass1.png": {scale: 1.4}
   "./assets/images/share/menu/achievement_reward.png": {icon: "./assets/images/share/menu/achievement.png", badge: [65, -55, 75, 70]}
   "./assets/images/share/menu/message_reward.png": {icon: "./assets/images/share/menu/message.png", badge: [65, -55, 75, 70]}
   "./assets/images/share/menu/assist_reward.png": {icon: "./assets/images/share/menu/more.png", badge: [20, -45, 70, 50]}
@@ -159,6 +161,10 @@ crops:
   "478,350,981,399": [360, 310, 1200, 170]    # 合成 筛选规则 材料类型选项（移动端选项从 x=366 开始）
   "686,287,980,650": [650, 220, 1110, 720]    # 生存索引 右侧副本列表
   "0,903,144,120": [1680, 20, 100, 80]        # 战斗 自动战斗按钮（移动端在右上角）
+  "182,977,209,43": [260, 975, 250, 60]       # 差分宇宙首页 左下积分「18000/18000」（PC 区域只截到前半）
+  "966,954,176,60": [750, 955, 190, 65]       # 副本配队 「支援」按钮（移动端在快速编队左边）
+  "157,22,300,81": [380, 55, 320, 60]         # 支援列表 顶部「支援角色」页签
+  "157,22,276,81": [380, 55, 320, 60]
   "231,420,450,536": [175, 400, 470, 600]     # 逐光捡金 左侧玩法列表（忘却之庭 虚构叙事）
   "689,285,970,474": [660, 260, 1100, 700]    # 逐光捡金 右侧当期信息（名称 星数 传送 虚构叙事的星数在下半部分）
   "540,406,1156,516": [300, 350, 1400, 450]   # 忘却之庭 关卡编号（右边留出星星的位置）
