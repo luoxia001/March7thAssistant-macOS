@@ -22,7 +22,7 @@ autoplot_hero_chronicle_enable: false # 是否自动阅读如我所书中的翁�
 debug_mode_enable: false # 是否启用调试模式。开启后会在屏幕对应位置实时绘制检测范围框（透明悬浮窗），用于调试自动化识别。仅 Windows 生效。
 
 # 更新检查
-check_update: true # 是否检查更新。true 检查，false 不检查。
+check_update: false # 是否检查更新。true 检查，false 不检查。
 
 # 成功后暂停
 pause_after_success: true # 是否在成功后暂停程序。true 若非循环执行则暂停程序，false 直接退出。

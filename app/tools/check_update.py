@@ -163,6 +163,10 @@ class UpdateThread(QThread):
 def checkUpdate(self, timeout: int = 5, flag: bool = False, silent: bool = False):
     """检查更新，并根据更新状态显示不同的信息或执行更新操作。"""
 
+    # 关闭检查更新时 启动和开始任务时的自动检查直接跳过 不再联网（macOS 移植版不能用上游 Windows 更新包覆盖）
+    if (flag or silent) and not cfg.check_update:
+        return
+
     suppress_feedback = silent or (flag and not cfg.check_update)
 
     def open_update_window(
