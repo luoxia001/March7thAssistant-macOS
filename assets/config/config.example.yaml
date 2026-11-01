@@ -25,10 +25,10 @@ debug_mode_enable: false # 是否启用调试模式。开启后会在屏幕对�
 check_update: false # 是否检查更新。true 检查，false 不检查。
 
 # 成功后暂停
-pause_after_success: true # 是否在成功后暂停程序。true 若非循环执行则暂停程序，false 直接退出。
+pause_after_success: false # 是否在成功后暂停程序。true 若非循环执行则暂停程序，false 直接退出。
 
 # 失败后直接退出
-exit_after_failure: false # 是否在失败后直接退出。true 直接退出，false 暂停程序。
+exit_after_failure: true # 是否在失败后直接退出。true 直接退出，false 暂停程序。
 
 # 任务完成后操作
 after_finish: None # 任务完成后的操作，可选值："None"（无操作）, "Exit"（退出程序）, "Loop"（循环执行）, "Shutdown"（关机）, "Sleep"（睡眠）, "Hibernate"（休眠）, "Restart"（重启）, "Logoff"（注销）, "TurnOffDisplay"（关闭显示器）, "RunScript"（运行脚本）。

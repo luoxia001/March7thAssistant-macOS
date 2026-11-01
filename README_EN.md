@@ -77,7 +77,7 @@ bash tools/macos/make_app.sh
 ## Usage
 
 - Double-click `三月七小助手.app`, or run `uv run app.py` (GUI) / `uv run main.py` (headless one-click daily).
-- PlayCover mode is enabled automatically on macOS. `config.yaml` is generated from `assets/config/config.example.yaml` on first run. macOS options: `playcover_bundle_id`, `playcover_maatools_host`, `playcover_maatools_port`, `forgottenhall_team1_preset`, `forgottenhall_team2_preset`.
+- PlayCover mode is enabled automatically on macOS. `config.yaml` is generated from `assets/config/config.example.yaml` on first run. macOS options: `playcover_bundle_id`, `playcover_maatools_host`, `playcover_maatools_port`, `forgottenhall_team1_preset`, `forgottenhall_team2_preset`. Update checking is off by default (`check_update: false`, upstream update packages are Windows builds and would overwrite the port), and the CLI exits when done instead of waiting for Enter (`pause_after_success: false`, `exit_after_failure: true`).
 - The game can stay in the background; just don't click inside the game window while a task runs. Logs are in `logs/`.
 - Mobile adaptation (regions, coordinates, thresholds) lives in `assets/mobile/profile.yaml`; iOS templates in `assets/mobile/images/` override `assets/images/` at the same path.
 

@@ -105,6 +105,9 @@ bash tools/macos/make_app.sh
    playcover_maatools_port: 1717
    forgottenhall_team1_preset: 0 # 忘却之庭用游戏内预设编队（0 表示逐个选角色）
    forgottenhall_team2_preset: 0
+   check_update: false          # 默认关闭检查更新（上游更新包是 Windows 版，会覆盖移植）
+   pause_after_success: false   # 命令行跑完直接退出，不停在「按回车键关闭窗口」
+   exit_after_failure: true
    ```
 
 5. 脚本运行时**不需要游戏在前台**，可以去做别的事，但不要用鼠标点击游戏窗口，以免干扰操作
