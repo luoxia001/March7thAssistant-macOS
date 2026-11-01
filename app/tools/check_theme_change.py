@@ -2,6 +2,9 @@
 from qfluentwidgets import setTheme, Theme, qconfig
 from PySide6.QtCore import QThread, Signal
 from PySide6.QtCore import QTimer
+import os
+import subprocess
+import sys
 import darkdetect
 
 
@@ -18,6 +21,7 @@ class SystemThemeListener(QThread):
         super().__init__(parent=parent)
         self._isSupported = False
         self._stopFlag = False
+        self._proc = None
 
     def run(self):
         try:
@@ -27,14 +31,31 @@ class SystemThemeListener(QThread):
             self._isSupported = True
             self.initCompleted.emit(True)
 
-            # 这个调用会阻塞，直到线程被终止
-            darkdetect.listener(self._onThemeChanged)
+            if sys.platform == "darwin":
+                self._listenMac()
+            else:
+                # 这个调用会阻塞，直到线程被终止
+                darkdetect.listener(self._onThemeChanged)
         except NotImplementedError as e:
             self._isSupported = False
             self.initCompleted.emit(False)
         except Exception as e:
             self._isSupported = False
             self.initCompleted.emit(False)
+
+    def _listenMac(self):
+        """macOS 上 darkdetect.listener 会另起监听子进程 主程序退出时不会跟着结束
+        这里照它的方式自己启动子进程 停止时能一并结束"""
+        if not darkdetect._mac_detect._can_listen:
+            raise NotImplementedError()
+        self._proc = subprocess.Popen(
+            (sys.executable, "-c", "import _mac_detect as m; m._listen_child()"),
+            stdout=subprocess.PIPE,
+            universal_newlines=True,
+            cwd=os.path.dirname(darkdetect._mac_detect.__file__),
+        )
+        for line in self._proc.stdout:
+            self._onThemeChanged(line.strip())
 
     def _onThemeChanged(self, theme: str):
         """系统主题变化回调"""
@@ -52,6 +73,11 @@ class SystemThemeListener(QThread):
     def stop(self):
         """停止监听线程"""
         self._stopFlag = True
+        # macOS 结束监听子进程后 读取循环会自己结束
+        if self._proc is not None and self._proc.poll() is None:
+            self._proc.kill()
+            self._proc.wait(1)
+            self.wait(500)
         # darkdetect.listener 无法被中断，只能等待或强制终止
         if self.isRunning():
             self.terminate()  # 强制终止线程
