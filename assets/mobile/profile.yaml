@@ -119,7 +119,8 @@ templates:
   "./assets/images/purefiction/prepare_fight.png": {threshold: 0.8}
   # 战斗右上角「未开启自动战斗」 不同战斗场景下 0.82~0.90 开启后约 0.34
   # 开启后图标变黄 战斗特效下形状匹配可达 0.75 用黄色像素排除
-  "./assets/images/share/base/not_auto.png": {threshold: 0.75, reject_color: {lower: [15, 90, 150], upper: [40, 255, 255], min_pixels: 100}}
+  # 未开自动战斗 带透明通道只比对 ⋈ 笔画 不受战斗场景背景影响（原模板带背景 部分场景低于 0.75 一直开不了自动）
+  "./assets/images/share/base/not_auto.png": {threshold: 0.8, reject_color: {lower: [15, 90, 150], upper: [40, 255, 255], min_pixels: 100}}
   # 货币战争选关 底部「敌人难度」数字 难度1约 0.88 难度2约 0.67
   "./assets/images/screen/universe/homepage.png": {scale: 1.25, threshold: 0.85}   # 差分宇宙首页「开始游戏」 移动端约 0.89
   # 交互条图标 随意门是「➜」 事件是「💬」 差分宇宙事件位面里任一出现都算可以按 F
